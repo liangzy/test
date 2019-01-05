@@ -1,0 +1,37 @@
+export function showContact (connectWay) {
+  // 如果是在线客服
+  if (connectWay.connect_info == '800085086' || connectWay.connect_info == 'http://oss.baobaobooks.net/static/images/qrcode/kaiyue_wechat.jpg') {
+    onlineService(this.login)
+    return
+  }
+  if (connectWay.type == 1) {
+    if (isPC()) {
+      this.$pop.open({
+        text: `请拨打客服电话 <a href='tel:${connectWay.connect_info}'>${connectWay.connect_info}</a>`,
+        titleBlack: true,
+      })
+    } else {
+      const tel = connectWay.connect_info
+      if (isNativeIos()) {
+        window.webkit.messageHandlers.hb_openContactTel.postMessage(tel)
+      } else if (isNativeAndroid()) {
+        window.webkit_android.hb_openContactTel(tel)
+      } else {
+        window.open(`tel:${tel}`)
+      }
+    }
+    return
+  }
+
+  if (connectWay.type == 5) {
+    const qq = connectWay.connect_info
+    if (isNativeIos()) {
+      window.webkit.messageHandlers.hb_openContactQQ.postMessage(qq)
+    } else if (isNativeAndroid()) {
+      window.webkit_android.hb_openContactQQ(qq)
+    } else {
+      openQQ(qq)
+    }
+  }
+  this.showContactModal = true
+}
